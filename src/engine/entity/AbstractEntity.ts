@@ -9,6 +9,7 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
     public readonly id: EntityId = makeId() as EntityId;
     public readonly featureRegistry: Map<FeatureType, Set<AbstractFeature>> =
         new Map();
+    public context: Record<string, unknown> = {};
 
     constructor(public parent: AbstractEntity | null, public props: P) {
         if (this.parent) {
@@ -23,16 +24,21 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
     abstract _destroy(): void;
 
     public registerFeature(feature: AbstractFeature): void {
-        const registrySet = this.featureRegistry.get(feature.constructor.name);
+        const registrySet = this.featureRegistry.get(feature.type);
         if (registrySet) {
             registrySet.add(feature);
         } else {
-            this.featureRegistry.set(
-                feature.constructor.name,
-                new Set([feature])
-            );
+            this.featureRegistry.set(feature.type, new Set([feature]));
         }
         this.parent?.registerFeature(feature);
+    }
+
+    public unregisterFeature(feature: AbstractFeature): void {
+        const registrySet = this.featureRegistry.get(feature.type);
+        if (registrySet) {
+            registrySet.delete(feature);
+        }
+        this.parent?.unregisterFeature(feature);
     }
 
     public act(delta: number): void {
@@ -52,6 +58,7 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
     public attachChild(child: AbstractEntity): void {
         this.children.set(child.id, child);
         child.parent = this;
+        Object.setPrototypeOf(child.context, this.context);
     }
 
     public detachChild(id: EntityId): AbstractEntity | undefined {
@@ -59,6 +66,7 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
         if (child) {
             this.children.delete(id);
             child.parent = null;
+            Object.setPrototypeOf(child.context, Object.prototype);
 
             return child;
         }
@@ -67,7 +75,7 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
     }
 
     public attachFeature(feature: AbstractFeature): void {
-        this.features.set(feature.constructor.name, feature);
+        this.features.set(feature.type, feature);
         this.registerFeature(feature);
     }
 
@@ -77,7 +85,12 @@ export abstract class AbstractEntity<P extends EntityProps = EntityProps> {
         const feature = this.features.get(featureType);
         if (feature) {
             this.features.delete(featureType);
+            this.unregisterFeature(feature);
         }
         return feature;
+    }
+
+    public getFromContext<T = unknown>(key: string): T | undefined {
+        return this.context[key] as T | undefined;
     }
 }

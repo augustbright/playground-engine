@@ -5,5 +5,6 @@ export type FeatureId = Tagged<number, "FeatureId">;
 
 export type EntityProps = object;
 export type FeatureProps = object;
+export type FeatureState = object;
 
 export type FeatureType = string;
