@@ -1,10 +1,5 @@
 import type { AbstractEntity } from "../entity/AbstractEntity";
-import type {
-    FeatureId,
-    FeatureProps,
-    FeatureState,
-    FeatureType,
-} from "../types";
+import type { FeatureId, FeatureProps, FeatureState } from "../types";
 import { makeId } from "../utils";
 
 export abstract class AbstractFeature<
@@ -16,11 +11,10 @@ export abstract class AbstractFeature<
     public state: S;
 
     constructor(public readonly entity: AbstractEntity, public props: P) {
-        this.entity.attachFeature(this);
+        this.entity._attachFeature(this);
         this.state = this._init();
     }
 
-    abstract get type(): FeatureType;
     abstract _init(): S;
     abstract _act(delta: number): void;
     abstract _destroy(): void;
@@ -31,6 +25,6 @@ export abstract class AbstractFeature<
 
     public destroy(): void {
         this._destroy();
-        this.entity.detachFeature(this.type);
+        this.entity.detachFeature(Object.getPrototypeOf(this).constructor);
     }
 }

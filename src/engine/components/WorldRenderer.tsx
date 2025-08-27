@@ -1,17 +1,22 @@
 import * as THREE from "three";
 import cx from "classnames";
 import { useEffect, useRef, useState, type HTMLAttributes } from "react";
-import type { World } from "../entity/World";
+import type { Entity } from "../entity";
 
 export const WorldRenderer = ({
     world,
+    camera,
     active,
     ...rest
-}: { world: World; active: boolean } & HTMLAttributes<HTMLCanvasElement>) => {
+}: {
+    world: Entity;
+    camera: THREE.Camera;
+    active: boolean;
+} & HTMLAttributes<HTMLCanvasElement>) => {
     const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
-    const scene = world.getScene();
-    const camera = world.getActiveCamera();
+    const scene = world.object3D;
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -29,24 +34,25 @@ export const WorldRenderer = ({
 
     useEffect(() => {
         if (!renderer) return;
-        // observe resize of the canvas
-        const canvas = renderer.domElement;
+        const container = containerRef.current!;
         const resizeObserver = new ResizeObserver(() => {
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            if (canvas.width !== width || canvas.height !== height) {
-                renderer.setSize(width, height, false);
-                if (camera instanceof THREE.PerspectiveCamera) {
-                    camera.aspect = width / height;
-                    camera.updateProjectionMatrix();
-                }
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            if (canvasRef.current) {
+                canvasRef.current.width = width;
+                canvasRef.current.height = height;
+            }
+            renderer.setSize(width, height, false);
+            if (camera instanceof THREE.PerspectiveCamera) {
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
             }
         });
 
-        resizeObserver.observe(canvas);
+        resizeObserver.observe(container);
 
         return () => {
-            resizeObserver.unobserve(canvas);
+            resizeObserver.unobserve(container);
         };
     }, [renderer, camera]);
 
@@ -70,8 +76,18 @@ export const WorldRenderer = ({
     }, [world, renderer, scene, camera, active]);
 
     return (
-        <div className={cx("relative", rest.className)}>
-            <canvas ref={canvasRef} {...rest}></canvas>
+        <div
+            ref={containerRef}
+            className={cx(
+                "relative grow border border-gray-700",
+                rest.className
+            )}
+        >
+            <canvas
+                className="absolute top-0 left-0 bg-red-400"
+                ref={canvasRef}
+                {...rest}
+            ></canvas>
             <div
                 className={cx(
                     "absolute flex justify-center items-center inset-0",

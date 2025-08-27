@@ -1,12 +1,15 @@
-import type { CameraFeature } from "../feature/built-in/CameraFeature";
+import type { EntityProps } from "../types";
 import { AbstractEntity } from "./AbstractEntity";
 import * as THREE from "three";
 
 export class World extends AbstractEntity {
-    private _activeCameraFeature: CameraFeature | undefined = undefined;
-    _init(): void {
+    constructor(parent: AbstractEntity | null, props: EntityProps) {
         const scene = new THREE.Scene();
+        super(parent, props, scene);
         this.context.scene = scene;
+    }
+    _init() {
+        return {};
     }
 
     _act(): void {}
@@ -15,22 +18,5 @@ export class World extends AbstractEntity {
 
     getScene() {
         return this.getFromContext<THREE.Scene>("scene");
-    }
-
-    getActiveCamera() {
-        if (this._activeCameraFeature && this._activeCameraFeature.isActive) {
-            return this._activeCameraFeature.state.camera;
-        }
-        const cameras = this.featureRegistry.get("camera") as
-            | Set<CameraFeature>
-            | undefined;
-        if (cameras) {
-            for (const cameraFeature of cameras) {
-                if (cameraFeature.isActive) {
-                    this._activeCameraFeature = cameraFeature;
-                    return cameraFeature.state.camera;
-                }
-            }
-        }
     }
 }
