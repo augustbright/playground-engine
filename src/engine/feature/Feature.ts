@@ -1,17 +1,17 @@
-import type { AbstractEntity } from "../entity/AbstractEntity";
+import type { Entity } from "../entity";
 import type { FeatureId, FeatureProps, FeatureState } from "../types";
 import { makeId } from "../utils";
 
-export abstract class AbstractFeature<
+export abstract class Feature<
     P extends FeatureProps = FeatureProps,
     S extends FeatureState = FeatureState
 > {
     public readonly id: FeatureId = makeId() as FeatureId;
     public isActive: boolean = true;
     public state: S;
+    public entity: Entity | null = null;
 
-    constructor(public readonly entity: AbstractEntity, public props: P) {
-        this.entity._attachFeature(this);
+    constructor(public props: P) {
         this.state = this._init();
     }
 
@@ -20,11 +20,15 @@ export abstract class AbstractFeature<
     abstract _destroy(): void;
 
     public act(delta: number): void {
+        if (!this.isActive) return;
+        if (!this.entity) return;
+
         this._act(delta);
     }
 
     public destroy(): void {
         this._destroy();
-        this.entity.detachFeature(Object.getPrototypeOf(this).constructor);
+        this.isActive = false;
+        this.entity?.detachFeature(Object.getPrototypeOf(this).constructor);
     }
 }

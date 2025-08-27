@@ -4,11 +4,12 @@ import * as THREE from "three";
 export const Test1 = () => {
     const screenRef = useRef<HTMLCanvasElement>(null);
     useEffect(() => {
-        if (!screenRef.current) return;
+        const canvas = screenRef.current;
+        if (!canvas) return;
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({
-            canvas: screenRef.current!,
+            canvas,
             antialias: true,
         });
 
@@ -33,9 +34,6 @@ export const Test1 = () => {
         animate();
 
         return () => {
-            if (screenRef.current) {
-                screenRef.current.removeChild(renderer.domElement);
-            }
             renderer.dispose();
         };
     }, []);

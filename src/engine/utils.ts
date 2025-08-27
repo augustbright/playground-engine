@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { AbstractEntity, Entity } from "./entity";
+import { Entity } from "./entity";
 import type { Tag } from "./types";
 
 const currentId = { value: 0 };
@@ -16,25 +16,24 @@ export const createWorld = ({
 }: {
     name?: string;
 } = {}) => {
-    return new Entity(
-        null,
-        {
-            name,
-        },
-        new THREE.Scene()
-    );
+    return new Entity({
+        name,
+        object3D: new THREE.Scene(),
+        parent: null,
+    });
 };
 
-export const process = (entity: AbstractEntity) => {
+export const process = (entity: Entity) => {
     let currentTime = performance.now();
     let framesCount = 0;
     let fps = 0;
     const act = () => {
         const newTime = performance.now();
         const delta = newTime - currentTime;
+        const deltaInSeconds = delta / 1000;
         currentTime = newTime;
 
-        entity.act(delta);
+        entity.act(deltaInSeconds);
 
         framesCount++;
         requestAnimationFrame(act);
