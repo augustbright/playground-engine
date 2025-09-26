@@ -2,6 +2,8 @@ import * as THREE from "three";
 import cx from "classnames";
 import { useEffect, useRef, useState, type HTMLAttributes } from "react";
 import type { Entity } from "../entity";
+import { inputManager } from "../input";
+import { InputInfo } from "./InputInfo";
 
 export const WorldRenderer = ({
     world,
@@ -17,6 +19,16 @@ export const WorldRenderer = ({
     const scene = world.object3D;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        inputManager.attach(canvasRef.current!);
+        canvasRef.current!.addEventListener("contextmenu", (e) =>
+            e.preventDefault()
+        );
+        return () => {
+            inputManager.detach();
+        };
+    }, []);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -83,6 +95,7 @@ export const WorldRenderer = ({
                 rest.className
             )}
         >
+            <InputInfo className="absolute top-2 left-2 text-xs text-white z-10 pointer-events-none"></InputInfo>
             <canvas
                 className="absolute top-0 left-0 bg-red-400"
                 ref={canvasRef}

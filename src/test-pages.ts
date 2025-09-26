@@ -2,6 +2,7 @@ import { Test1 } from "./pages/Test1";
 import { Test2 } from "./pages/Test2";
 import { Test3 } from "./pages/Test3";
 import { Test4 } from "./pages/Test4";
+import { Test5 } from "./pages/Test5";
 
 export const TEST_PAGES: Array<{
     title: string;
@@ -12,4 +13,5 @@ export const TEST_PAGES: Array<{
     { title: "Test2", path: "test2", component: Test2 },
     { title: "Test3", path: "test3", component: Test3 },
     { title: "Test4", path: "test4", component: Test4 },
+    { title: "Test5", path: "test5", component: Test5 },
 ];

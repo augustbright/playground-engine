@@ -54,13 +54,6 @@ export const Test4 = () => {
                     Math.PI / 8
                 );
                 entity.object3D.add(spotLight);
-
-                const spotLightHelper = new T.SpotLightHelper(spotLight);
-                entity.object3D.add(spotLightHelper);
-
-                setInterval(() => {
-                    spotLightHelper.update();
-                }, 100);
             },
 
             children: [],
