@@ -30,6 +30,10 @@ export const Test2 = () => {
         <WorldRenderer
             active
             world={world}
+            process={{
+                getFps: () => -1,
+                stop: () => {},
+            }}
             camera={camera.object3D}
             className="w-96 h-96 border-2"
         />

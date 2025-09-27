@@ -54,3 +54,5 @@ export const process = (entity: Entity) => {
         getFps: () => fps,
     };
 };
+
+export type ProcessControls = ReturnType<typeof process>;

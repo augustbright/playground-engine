@@ -35,10 +35,15 @@ export const InputInfo = ({ className }: { className?: string }) => {
         };
     }, []);
     return (
-        <div className={cn("p-2 flex flex-col gap-1 font-mono", className)}>
-            <div className={cn({ "text-red-300": !mouseInside })}>
+        <div
+            className={cn(
+                "p-2 flex flex-col gap-1 font-mono text-xs bg-slate-700 text-gray-200",
+                className
+            )}
+        >
+            <div>
                 Mouse: {mousePosition.x}, {mousePosition.y}{" "}
-                {mouseInside ? "(inside)" : "(outside)"}
+                {!mouseInside && <span className="text-red-300">(out)</span>}
             </div>
             <div>
                 Pointer: {pointerPosition.x.toFixed(2)},{" "}

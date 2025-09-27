@@ -1,13 +1,21 @@
 import * as THREE from "three";
 import type { Entity } from "./entity";
 import { useEffect, useState } from "react";
-import { createWorld, process } from "./utils";
+import { createWorld, process, type ProcessControls } from "./utils";
 
 type WorldInitializerFn<R> = (world: Entity<THREE.Scene>) => R;
+type UseWorldParams = {
+    name?: string;
+};
 
-export const useWorld = <R>(initializer: WorldInitializerFn<R>) => {
+export const useWorld = <R>(
+    initializer: WorldInitializerFn<R>,
+    params: UseWorldParams = {}
+) => {
     const [[world, custom, processControls]] = useState(() => {
-        const world = createWorld();
+        const world = createWorld({
+            name: params.name,
+        });
         const custom = initializer(world);
 
         return [world, custom, process(world)] as const;
@@ -21,4 +29,18 @@ export const useWorld = <R>(initializer: WorldInitializerFn<R>) => {
     );
 
     return { world, custom, process: processControls };
+};
+
+export const useFPS = (process: ProcessControls) => {
+    const [fps, setFps] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFps(process.getFps());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [process]);
+
+    return { fps };
 };

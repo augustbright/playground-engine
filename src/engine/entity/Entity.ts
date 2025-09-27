@@ -139,12 +139,13 @@ export class Entity<O extends THREE.Object3D = THREE.Object3D> {
         return entity;
     }
 
-    public attachChild(child: Entity): void {
+    public attachChild<T extends THREE.Object3D>(child: Entity<T>): Entity<T> {
         this.children.set(child.id, child);
         child.parent = this;
         this.object3D.add(child.object3D);
         Object.setPrototypeOf(child.context, this.context);
         this.registerTags(child);
+        return child;
     }
 
     public detachChild(id: EntityId): Entity | undefined {

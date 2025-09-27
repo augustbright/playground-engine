@@ -10,7 +10,7 @@ export const RouteRoot = () => {
 
     return (
         <div className="flex flex-col h-screen">
-            <nav className="bg-blue-500 text-white p-4 gap-4 flex items-center shrink-0">
+            <nav className="bg-slate-900 text-gray-200 border-b border-slate-400 p-4 gap-4 flex items-center shrink-0">
                 <Button onClick={() => setShowSidebar((prev) => !prev)}>
                     <NumberedListIcon className="size-4" />
                 </Button>
@@ -20,7 +20,7 @@ export const RouteRoot = () => {
             </nav>
             <div className="flex grow">
                 {showSidebar && (
-                    <nav className="w-48 bg-gray-100 p-4 border-r border-gray-300 shrink-0 overflow-y-auto">
+                    <nav className="w-48 bg-slate-900 text-gray-200 p-4 border-r border-slate-400 shrink-0 overflow-y-auto">
                         {TEST_PAGES.map(({ title, path }) => (
                             <div key={path} className="p-2">
                                 <Link

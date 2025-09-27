@@ -197,9 +197,3 @@ class InputManager {
 }
 
 export const inputManager = new InputManager();
-
-inputManager.events$
-    .pipe(filter((event) => event.type !== "mousemove"))
-    .subscribe((event) => {
-        console.log("Input Event:", event);
-    });

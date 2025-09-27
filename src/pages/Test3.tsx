@@ -62,7 +62,12 @@ export const Test3 = () => {
     return (
         <TestPage>
             <div>FPS: {fps}</div>
-            <WorldRenderer world={world} camera={custom.camera} active />
+            <WorldRenderer
+                world={world}
+                process={process}
+                camera={custom.camera}
+                active
+            />
         </TestPage>
     );
 };

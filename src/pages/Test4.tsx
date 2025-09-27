@@ -7,6 +7,7 @@ import { useWorld } from "../engine/hooks";
 export const Test4 = () => {
     const {
         world,
+        process,
         custom: { camera },
     } = useWorld((world) => {
         const camera = world.add(new THREE.PerspectiveCamera(), {
@@ -63,7 +64,12 @@ export const Test4 = () => {
     });
     return (
         <TestPage>
-            <WorldRenderer active world={world} camera={camera.object3D} />
+            <WorldRenderer
+                active
+                process={process}
+                world={world}
+                camera={camera.object3D}
+            />
         </TestPage>
     );
 };
