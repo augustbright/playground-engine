@@ -4,7 +4,7 @@ import { Feature } from "../Feature";
 export class Behavior<S extends object = object> extends Feature<
     {
         init?: () => S;
-        act?: (state: S, delta: number, entity: Entity) => S | void;
+        act?: (entity: Entity, delta: number, state: S) => S | void;
         destroy?: (state: S) => void;
     },
     S
@@ -13,8 +13,9 @@ export class Behavior<S extends object = object> extends Feature<
         return this.props.init?.() || ({} as S);
     }
 
-    _act(): void {
-        this.state = this.props.act?.(this.state, 0, this.entity!) || ({} as S);
+    _act(delta: number): void {
+        this.state =
+            this.props.act?.(this.entity!, delta, this.state) || ({} as S);
     }
 
     _destroy(): void {

@@ -3,12 +3,18 @@ import type { Entity } from "./entity";
 import { useEffect, useState } from "react";
 import { createWorld, process, type ProcessControls } from "./utils";
 
-type WorldInitializerFn<R> = (world: Entity<THREE.Scene>) => R;
+type InitReturn = {
+    camera: Entity<THREE.Camera>;
+};
+
+type WorldInitializerFn<R extends InitReturn> = (
+    world: Entity<THREE.Scene>
+) => R;
 type UseWorldParams = {
     name?: string;
 };
 
-export const useWorld = <R>(
+export const useWorld = <R extends InitReturn>(
     initializer: WorldInitializerFn<R>,
     params: UseWorldParams = {}
 ) => {
@@ -28,7 +34,7 @@ export const useWorld = <R>(
         [processControls]
     );
 
-    return { world, custom, process: processControls };
+    return { world, custom, process: processControls, camera: custom.camera };
 };
 
 export const useFPS = (process: ProcessControls) => {

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, type RouteObject } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { RouteRoot } from "./RouteRoot";
 import { HomePage } from "../pages/HomePage";
@@ -8,12 +8,16 @@ const router = createBrowserRouter([
     {
         path: "/",
         Component: RouteRoot,
+
         children: [
             { index: true, Component: HomePage },
-            ...TEST_PAGES.map(({ path, component }) => ({
-                path,
-                Component: component,
-            })),
+            ...TEST_PAGES.map(
+                ({ path, component }) =>
+                    ({
+                        path,
+                        Component: component,
+                    } satisfies RouteObject)
+            ),
         ],
     },
 ]);
