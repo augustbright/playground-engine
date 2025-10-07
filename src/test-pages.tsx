@@ -6,6 +6,7 @@ import { Test4 } from "./pages/Test4";
 import { Test5 } from "./pages/Test5";
 import { Test6 } from "./pages/Test6";
 import { Test7 } from "./pages/Test7";
+import { VoxelDemo } from "./pages/VoxelDemo";
 
 export const TEST_PAGES: Array<{
     title: string;
@@ -26,5 +27,10 @@ export const TEST_PAGES: Array<{
         title: "Toolbar",
         path: "toolbar",
         component: Test7,
+    },
+    {
+        title: "Voxel Demo",
+        path: "voxel-demo",
+        component: VoxelDemo,
     },
 ];
