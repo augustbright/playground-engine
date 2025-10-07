@@ -5,6 +5,7 @@ import { createWorld, process, type ProcessControls } from "./utils";
 
 type InitReturn = {
     camera: Entity<THREE.Camera>;
+    cleanup?: () => void;
 };
 
 type WorldInitializerFn<R extends InitReturn> = (
@@ -18,13 +19,16 @@ export const useWorld = <R extends InitReturn>(
     initializer: WorldInitializerFn<R>,
     params: UseWorldParams = {}
 ) => {
-    const [[world, custom, processControls]] = useState(() => {
+    const [[world, custom, processControls, cleanup]] = useState(() => {
         const world = createWorld({
             name: params.name,
         });
-        const custom = initializer(world);
+        const { cleanup, ...custom } = initializer(world);
 
-        return [world, custom, process(world)] as const;
+        //TODO: REMOVE
+        window._ir = world.indexRegistry;
+
+        return [world, custom, process(world), cleanup] as const;
     });
 
     useEffect(
@@ -33,6 +37,12 @@ export const useWorld = <R extends InitReturn>(
         },
         [processControls]
     );
+
+    useEffect(() => {
+        return () => {
+            cleanup?.();
+        };
+    }, [cleanup]);
 
     return { world, custom, process: processControls, camera: custom.camera };
 };

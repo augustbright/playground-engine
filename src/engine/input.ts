@@ -53,6 +53,8 @@ class InputManager {
         )
     );
 
+    public mouseClick$ = this.events$.pipe(filter((e) => e.type === "click"));
+
     private pressedKeys = new Set<KeyCode>();
     private pressedMouseButtons = new Set<MouseButton>();
     public mousePosition = { x: 0, y: 0 };

@@ -48,7 +48,7 @@ export const Test3 = () => {
             },
         });
 
-        return { camera: camera.object3D };
+        return { camera: camera };
     });
 
     useEffect(() => {
@@ -65,7 +65,7 @@ export const Test3 = () => {
             <WorldRenderer
                 world={world}
                 process={process}
-                camera={custom.camera}
+                camera={custom.camera.object3D}
                 active
             />
         </TestPage>

@@ -3,7 +3,6 @@ import cx from "classnames";
 import { useEffect, useRef, useState, type HTMLAttributes } from "react";
 import type { Entity } from "../entity";
 import { inputManager } from "../input";
-import { InputInfo } from "./InputInfo";
 import type { ProcessControls } from "../utils";
 import { useFPS } from "../hooks";
 import { CSS2DRenderer } from "three/examples/jsm/Addons.js";
@@ -13,12 +12,14 @@ export const WorldRenderer = ({
     camera,
     active,
     process,
+    aside,
     ...rest
 }: {
     world: Entity;
     process: ProcessControls;
     camera: THREE.Camera;
     active: boolean;
+    aside?: React.ReactNode;
 } & HTMLAttributes<HTMLCanvasElement>) => {
     const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
     const [cssRenderer, setCssRenderer] = useState<CSS2DRenderer | null>(null);
@@ -125,9 +126,11 @@ export const WorldRenderer = ({
                 <span className="float-right">{fps} FPS</span>
             </div>
             <div className="flex-grow flex">
-                <div className="flex flex-col border-r border-slate-400 bg-slate-600 w-48">
-                    <InputInfo className=""></InputInfo>
-                </div>
+                {aside && (
+                    <div className="flex flex-col border-r border-slate-400 bg-slate-600 w-48">
+                        {aside}
+                    </div>
+                )}
                 <div
                     ref={containerRef}
                     className={cx("relative grow border", rest.className)}

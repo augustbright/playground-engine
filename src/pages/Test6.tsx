@@ -6,29 +6,23 @@ import { addCellHighlighter } from "../engine/entity/creators/addCellHighlighter
 import { addGroundGrid } from "../engine/entity/creators/addGroundGrid";
 import { addPlaneCursor } from "../engine/entity/creators/addPlaneCursor";
 import { addPlaneCursorVisual } from "../engine/entity/creators/addPlaneCursorAxis";
+import { addPlaneCursorGroundGridLight } from "../engine/entity/creators/addPlaneCursorLight";
 import { addTopCamera } from "../engine/entity/creators/addTopCamera";
-import { Behavior } from "../engine/feature/built-in/Behavior";
+import { addVolumeDust } from "../engine/entity/creators/addVolumeDust";
 import { useWorld } from "../engine/hooks";
 
 export const Test6 = () => {
     const { world, camera, process } = useWorld(
         (world) => {
             const camera = addTopCamera(world);
+            addVolumeDust(camera);
             addBasicLight(world);
-            const marker = addPlaneCursor(world, camera.object3D);
-            addPlaneCursorVisual(marker);
-            addCellHighlighter(world, marker);
+            const { cursor } = addPlaneCursor(world, camera.object3D);
+            addPlaneCursorVisual(cursor);
+            addCellHighlighter(world, cursor);
             const grid = addGroundGrid(world, camera.object3D);
+            addPlaneCursorGroundGridLight(cursor, grid);
 
-            marker.attachFeature(
-                new Behavior({
-                    act() {
-                        grid.material.uniforms.uLightPos.value.copy(
-                            marker.object3D.position
-                        );
-                    },
-                })
-            );
             return { camera };
         },
         { name: "Infinite Ground" }

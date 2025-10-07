@@ -5,6 +5,7 @@ import { Test3 } from "./pages/Test3";
 import { Test4 } from "./pages/Test4";
 import { Test5 } from "./pages/Test5";
 import { Test6 } from "./pages/Test6";
+import { Test7 } from "./pages/Test7";
 
 export const TEST_PAGES: Array<{
     title: string;
@@ -20,5 +21,10 @@ export const TEST_PAGES: Array<{
         title: "Infinite Ground",
         path: "infinite-ground",
         component: Test6,
+    },
+    {
+        title: "Toolbar",
+        path: "toolbar",
+        component: Test7,
     },
 ];

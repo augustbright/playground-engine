@@ -19,7 +19,7 @@ export function addGroundGrid(
             minorPx: { value: 1.0 },
             majorPx: { value: 2.0 },
             fadeStart: { value: 20.0 },
-            fadeEnd: { value: 40.0 },
+            fadeEnd: { value: 200.0 },
 
             baseColor: { value: new THREE.Color(0.0, 0.0, 0.0) },
             lineColor: { value: new THREE.Color(0.3, 0.3, 0.3) },

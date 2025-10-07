@@ -10,6 +10,7 @@ export abstract class Feature<
     public isActive: boolean = true;
     public state: S;
     public entity: Entity | null = null;
+    public isBoundEntity: boolean = false;
 
     constructor(public props: P) {
         this.state = this._init();
@@ -19,9 +20,18 @@ export abstract class Feature<
     abstract _act(delta: number): void;
     abstract _destroy(): void;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private onceBoundToEntity(entity: Entity) {
+        // Override if needed
+    }
+
     public act(delta: number): void {
         if (!this.isActive) return;
         if (!this.entity) return;
+        if (!this.isBoundEntity) {
+            this.onceBoundToEntity(this.entity);
+        }
+        this.isBoundEntity = true;
 
         this._act(delta);
     }

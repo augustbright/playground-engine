@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { Entity } from "../Entity";
 import { Behavior } from "../../feature/built-in/Behavior";
 import { inputManager } from "../../input";
+import { map } from "rxjs";
 
 export const addPlaneCursor = (
     world: Entity<THREE.Scene>,
@@ -10,11 +11,17 @@ export const addPlaneCursor = (
 ) => {
     const raycaster = new THREE.Raycaster();
 
-    // const div = document.createElement("div");
-    // div.className = "text-white text-xs font-mono";
-    // div.textContent = "";
+    const cast = () => {
+        raycaster.setFromCamera(inputManager.pointerPosition, camera);
 
-    // const label = new CSS2DObject(div);
+        const target = new THREE.Vector3();
+
+        raycaster.ray.intersectPlane(
+            new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
+            target
+        );
+        return target;
+    };
 
     const intersectionMarker = new Entity({
         object3D: new THREE.Object3D(),
@@ -119,24 +126,29 @@ export const addPlaneCursor = (
         features: [
             new Behavior({
                 act() {
-                    raycaster.setFromCamera(
-                        inputManager.pointerPosition,
-                        camera
-                    );
-
-                    const target = new THREE.Vector3();
-
-                    raycaster.ray.intersectPlane(
-                        new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
-                        target
-                    );
-
-                    intersectionMarker.object3D.position.copy(target);
+                    intersectionMarker.object3D.position.copy(cast());
                 },
                 destroy() {},
             }),
         ],
     });
 
-    return world.attachChild(intersectionMarker);
+    const mouseClick$ = inputManager.mouseClick$.pipe(
+        map((e) => {
+            const target = cast();
+            return {
+                event: e.payload.event,
+                cast: target,
+                cell: {
+                    x: Math.floor(target.x),
+                    z: Math.floor(target.z),
+                },
+            };
+        })
+    );
+
+    return {
+        cursor: world.attachChild(intersectionMarker),
+        mouseClick$,
+    };
 };

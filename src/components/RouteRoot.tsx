@@ -10,12 +10,15 @@ export const RouteRoot = () => {
 
     return (
         <div className="flex flex-col h-screen">
-            <nav className="bg-slate-900 text-gray-200 border-b border-slate-400 p-4 gap-4 flex items-center shrink-0">
-                <Button onClick={() => setShowSidebar((prev) => !prev)}>
+            <nav className="bg-slate-900 text-gray-200 border-b border-slate-400 p-4 gap-4 flex items-center shrink-0 font-mono">
+                <Button
+                    color="blue"
+                    onClick={() => setShowSidebar((prev) => !prev)}
+                >
                     <NumberedListIcon className="size-4" />
                 </Button>
                 <Link to="/" className="mr-4">
-                    Playground Engine
+                    Worlds
                 </Link>
             </nav>
             <div className="flex grow">
